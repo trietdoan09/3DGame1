@@ -9,11 +9,10 @@ public class GameManager : MonoBehaviour
     private CarController carController;
     private CameraMovement playerCamera;
     private CarCameraMovement carCamera;
-    [SerializeField] private GameObject player;
+    public GameObject carDrive;
     // Start is called before the first frame update
     [SerializeField] private bool carCameraActive;
 
-    public GameObject carDriving;
 
     void Start()
     {
@@ -27,18 +26,17 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         ChangeCameraFollow();
-
+        CheckPlayerExitCar();
     }
     private void ChangeCameraFollow()
     {
         playerCamera.enabled = playerDrive ? false : true;
         carCamera.enabled = playerDrive ? true : false;
         carCameraActive = playerDrive;
-        CheckPlayerExitCar();
     }
     private void SetPlayerPosition()
     {
-        playerController.transform.position = carDriving.transform.position + new Vector3(-1,0,0);
+        playerController.transform.position = carDrive.transform.position + new Vector3(-1,0,0);
     }
     private void CheckPlayerExitCar()
     {
@@ -46,9 +44,8 @@ public class GameManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Return))
             {
-                player.SetActive(true);
                 playerDrive = false;
-                SetPlayerPosition();
+               // SetPlayerPosition();
             }
         }
     }

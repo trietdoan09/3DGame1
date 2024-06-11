@@ -53,7 +53,6 @@ public class CarController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        isDriving = gameManager.playerDrive;
         CheckEnterCar();
         GetInput();
         AnimateWheel();
@@ -79,6 +78,7 @@ public class CarController : MonoBehaviour
     {
         if (isDriving)
         {
+
             Movement();
             Steer();
             Brake();
@@ -157,7 +157,6 @@ public class CarController : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             touchPlayer = true;
-            GameObject.FindObjectOfType<GameManager>().carDriving = gameObject;
         }
     }
     private void OnCollisionStay(Collision collision)
@@ -170,6 +169,27 @@ public class CarController : MonoBehaviour
     private void OnCollisionExit(Collision collision)
     {
         if (collision.gameObject.CompareTag("Player"))
+        {
+            touchPlayer = false;
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            touchPlayer = true;
+        }
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            touchPlayer = true;
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
         {
             touchPlayer = false;
         }
