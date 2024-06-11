@@ -34,6 +34,10 @@ public class GameManager : MonoBehaviour
         carCamera.enabled = playerDrive ? true : false;
         carCameraActive = playerDrive;
     }
+    public void PlayerExitCar()
+    {
+        carDrive.GetComponent<CarController>().isDriving = false;
+    }
     private void SetPlayerPosition()
     {
         playerController.transform.position = carDrive.transform.position + new Vector3(-1,0,0);

@@ -39,7 +39,12 @@ public class CubeMovement : MonoBehaviour
 	[Header("Action")]
 	[SerializeField] private bool isTouchVehicle;
 	[SerializeField] private bool openTheDoor;
+	[SerializeField] private bool exitCar;
 	public bool isDriving;
+
+	[Header("Player Status")]
+	public float maxStamina;
+	public float currentStamina;
 
 
 	void Awake()
@@ -54,6 +59,9 @@ public class CubeMovement : MonoBehaviour
 		gameManager = GameObject.FindObjectOfType<GameManager>();
 		isDriving = false;
 		openTheDoor = false;
+		exitCar = false;
+		maxStamina = 100;
+		currentStamina = maxStamina;
 	}
     void FixedUpdate()
 	{
@@ -89,6 +97,12 @@ public class CubeMovement : MonoBehaviour
 			transform.position = gameManager.carDrive.transform.position;
 			transform.rotation = gameManager.carDrive.transform.rotation;
 		}
+        if (exitCar)
+		{
+			Debug.Log("Hello");
+			exitCar = false;
+			StartCoroutine(AnimExitCar());
+        }
 	}
 	private void ReceiveKeyInput()
 	{
@@ -111,6 +125,10 @@ public class CubeMovement : MonoBehaviour
 				gameManager.playerDrive = !gameManager.playerDrive;
 				StartCoroutine(AnimOpenCar());
 			}
+            if (!exitCar && !isTouchVehicle && openTheDoor)
+            {
+				exitCar = true;
+			}
         }
 	}
 	IEnumerator AnimOpenCar()
@@ -123,12 +141,17 @@ public class CubeMovement : MonoBehaviour
 		animator.SetBool("isDriving",true); 
 	}
 	IEnumerator AnimExitCar()
-    {
+	{
+		animator.SetBool("isDriving", false);
+		gameManager.PlayerExitCar();
+		yield return new WaitForSeconds(5f);
+		transform.parent = null;
+		rb.useGravity = true;
+		boxCollider.isTrigger = false;
+		isDriving = false;
+		openTheDoor = false;
+        transform.position = gameManager.carDrive.transform.position + new Vector3(-1.2f, 0, 0);
 		animator.SetBool("isEnterVehicle", gameManager.playerDrive);
-		yield return new WaitForSeconds(2f);
-		rb.useGravity = false;
-		boxCollider.isTrigger = true;
-		animator.SetBool("isDriving",false);
 	}
 	IEnumerator JumpAfterDelay(float delay)
 	{
@@ -141,6 +164,7 @@ public class CubeMovement : MonoBehaviour
         {
             maxVerticalInput = 1f;
             maxHorizontalInput = 1f;
+			currentStamina -= Time.deltaTime;
         }
         if (verticalInput > maxVerticalInput || horizontalInput > maxHorizontalInput)
         {
