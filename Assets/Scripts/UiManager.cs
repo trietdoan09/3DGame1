@@ -11,13 +11,14 @@ public class UiManager : MonoBehaviour
     void Start()
     {
         playerController = GameObject.FindObjectOfType<CubeMovement>();
-        staminaBar.maxValue = playerController.maxStamina;
-        staminaBar.value = playerController.currentStamina;
     }
 
     // Update is called once per frame
     void Update()
     {
+        staminaBar.maxValue = playerController.maxStamina;
+        Debug.Log(playerController.maxStamina);
         staminaBar.value = playerController.currentStamina;
+        Debug.Log(playerController.currentStamina);
     }
 }

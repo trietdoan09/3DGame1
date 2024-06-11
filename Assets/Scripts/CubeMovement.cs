@@ -9,7 +9,6 @@ public class CubeMovement : MonoBehaviour
 	public bool isHandlingInput = true;
 
 	[Tooltip("The speed the player will move"), SerializeField]
-	private float speed = 1f;
 	private Vector3 movement;
 	[Tooltip("The amount of upwards force to apply to the character when they jump"), SerializeField]
 	private float jumpVelocity = 20;
@@ -41,10 +40,13 @@ public class CubeMovement : MonoBehaviour
 	[SerializeField] private bool openTheDoor;
 	[SerializeField] private bool exitCar;
 	public bool isDriving;
+	private float speed = 1f;
+	private bool isRunning;
 
 	[Header("Player Status")]
 	public float maxStamina;
 	public float currentStamina;
+	[SerializeField] private bool runOutStamina;
 
 
 	void Awake()
@@ -62,6 +64,7 @@ public class CubeMovement : MonoBehaviour
 		exitCar = false;
 		maxStamina = 100;
 		currentStamina = maxStamina;
+		isRunning = false;
 	}
     void FixedUpdate()
 	{
@@ -158,14 +161,37 @@ public class CubeMovement : MonoBehaviour
 		yield return new WaitForSeconds(delay);
 		Jump();
 	}
+	IEnumerator RunOutStamina()
+    {
+		int coldown = 10;
+		while(coldown > 0)
+        {
+			coldown--;
+			yield return new WaitForSeconds(1f);
+        }
+		runOutStamina = false;
+		yield return null;
+    }
     private void Movement()
     {
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift) && currentStamina >1 && !runOutStamina)
         {
             maxVerticalInput = 1f;
             maxHorizontalInput = 1f;
-			currentStamina -= Time.deltaTime;
+			currentStamina -= Time.deltaTime *10;
+			isRunning = true;
+			if(currentStamina < 1)
+            {
+				runOutStamina = true;
+				StartCoroutine(RunOutStamina());
+            }
         }
+        else
+        {
+			currentStamina = currentStamina > maxStamina ? maxStamina : currentStamina + (Time.deltaTime * 5);
+			isRunning = false;
+		}
+
         if (verticalInput > maxVerticalInput || horizontalInput > maxHorizontalInput)
         {
             verticalInput = verticalInput >= maxVerticalInput ? maxVerticalInput : verticalInput;
@@ -191,14 +217,8 @@ public class CubeMovement : MonoBehaviour
 		Vector3 horizontalMove = Camera.main.transform.right;
 
 		movement = forwardMove * v + horizontalMove * h;
-		if(h == 1 || v == 1)
-		{
-			movement = (movement.normalized * speed / 2) * Time.deltaTime;
-		}
-        else
-        {
-			movement = (movement.normalized * speed / 5) * Time.deltaTime;
-		}
+		speed = isRunning ? 3 : 1;
+		movement = (movement.normalized * speed) * Time.deltaTime;
 		GetComponent<Rigidbody>().MovePosition(transform.position + movement);
 
 		animator.SetFloat("moveX", h);
