@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Ground
   - Vehicle
+  - Zombie
+  - EnemyWeapon
   layers:
   - Default
   - TransparentFX

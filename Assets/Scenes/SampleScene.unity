@@ -533,19 +533,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 48
   m_CollisionDetection: 0
---- !u!65 &616089181
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4493914613899274332}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.5217457, y: 1.823042, z: 0.3326645}
-  m_Center: {x: -0.016683578, y: 0.9008977, z: -0.027805328}
 --- !u!1 &667817491
 GameObject:
   m_ObjectHideFlags: 0
@@ -7684,7 +7671,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHandlingInput: 1
-  speed: 10
+  movement: {x: 0, y: 0, z: 0}
   jumpVelocity: 20
   maxVelocity: {x: 0, y: 0, z: 0}
   groundLayerMask:
@@ -7699,6 +7686,7 @@ MonoBehaviour:
   isDriving: 0
   maxStamina: 0
   currentStamina: 0
+  runOutStamina: 0
 --- !u!65 &919132149433725146
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8075,7 +8063,7 @@ GameObject:
   - component: {fileID: 3989546061264453823}
   m_Layer: 0
   m_Name: Base HumanLArmForearm
-  m_TagString: Untagged
+  m_TagString: EnemyWeapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8856,6 +8844,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3660009025050389670}
+  - component: {fileID: 2656270106866795173}
   m_Layer: 0
   m_Name: Base HumanLArmPalm
   m_TagString: Untagged
@@ -8863,6 +8852,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!65 &2656270106866795173
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2656270106866795172}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.18923166, y: 0.08719719, z: 0.124704376}
+  m_Center: {x: -0.11005349, y: -0.013340224, z: -0.010961835}
 --- !u!1 &2656650911697601210
 GameObject:
   m_ObjectHideFlags: 0
@@ -10309,14 +10311,30 @@ GameObject:
   - component: {fileID: 578376449383324239}
   - component: {fileID: 7389507112703194933}
   - component: {fileID: 616089180}
-  - component: {fileID: 616089181}
+  - component: {fileID: 4493914613899274333}
   m_Layer: 0
   m_Name: Zombie1
-  m_TagString: Untagged
+  m_TagString: Zombie
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &4493914613899274333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4493914613899274332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca40140102a11104cb6655ffead80647, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  distance: 0
+  angle: 30
+  height: 1
+  meshColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!4 &4529409439794839000
 Transform:
   m_ObjectHideFlags: 0
@@ -11392,13 +11410,27 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7849909225793205182}
+  - component: {fileID: 5931361788803889097}
   m_Layer: 0
   m_Name: Base HumanRArmPalm
-  m_TagString: Untagged
+  m_TagString: EnemyWeapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!65 &5931361788803889097
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5931361788803889096}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.18923166, y: 0.08719719, z: 0.124704376}
+  m_Center: {x: -0.11005349, y: -0.013340224, z: -0.010961835}
 --- !u!4 &6026512094232170205
 Transform:
   m_ObjectHideFlags: 0
