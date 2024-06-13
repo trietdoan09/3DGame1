@@ -5,17 +5,10 @@ using UnityEngine;
 
 public class CubeMovement : MonoBehaviour
 {
-	enum MoveToCarDoor
-    {
-		none,
-		leftDoor,
-		rightDoor
-    }
 	[Tooltip("Is this character currently controllable by the player"), SerializeField]
 	public bool isHandlingInput = true;
 
 	[Tooltip("The speed the player will move"), SerializeField]
-	private float speed = 1f;
 	private Vector3 movement;
 	[Tooltip("The amount of upwards force to apply to the character when they jump"), SerializeField]
 	private float jumpVelocity = 20;
@@ -25,12 +18,13 @@ public class CubeMovement : MonoBehaviour
 	private bool hasJumped = false;
 	private bool isGrounded;
 
-	private Rigidbody rb;
 	[Tooltip("The character will consider anything in this LayerMask to be 'Ground'"), SerializeField]
 	private LayerMask groundLayerMask;
 
 	[Header("Animator")]
 	[SerializeField] private Animator animator;
+	private Rigidbody rb;
+	private BoxCollider boxCollider;
 
 	public static int score;
 	public float showH;
@@ -43,107 +37,75 @@ public class CubeMovement : MonoBehaviour
 	private GameManager gameManager;
 	[Header("Action")]
 	[SerializeField] private bool isTouchVehicle;
-	[SerializeField] private MoveToCarDoor carDoor;
-	[SerializeField] private bool moveToCar;
-	[SerializeField] private bool isFisrtTimeOpenDoor;
+	[SerializeField] private bool openTheDoor;
+	[SerializeField] private bool exitCar;
+	public bool isDriving;
+	private float speed = 1f;
+	private bool isRunning;
+
+	[Header("Player Status")]
+	public float maxStamina;
+	public float currentStamina;
+	[SerializeField] private bool runOutStamina;
+
 
 	void Awake()
 	{
 		rb = GetComponent<Rigidbody>();
+		boxCollider = GetComponent<BoxCollider>();
 	}
     private void Start()
     {
 		maxVerticalInput = 0.5f;
 		maxHorizontalInput = 0.5f;
 		gameManager = GameObject.FindObjectOfType<GameManager>();
-		carDoor = MoveToCarDoor.none;
-		isFisrtTimeOpenDoor = true;
+		isDriving = false;
+		openTheDoor = false;
+		exitCar = false;
+		maxStamina = 100;
+		currentStamina = maxStamina;
+		isRunning = false;
 	}
     void FixedUpdate()
 	{
 		ApplyJumpPhysics();
-		//CapVelocity();
-		horizontalInput = Input.GetAxis("Horizontal");
+        //CapVelocity();
+        horizontalInput = Input.GetAxis("Horizontal");
 		verticalInput = Input.GetAxis("Vertical");
-		Movement();
-		//if (!moveToCar)
-		//{
-		//	Movement();
-		//}
-  //      else
-  //      {
-		//	if (carDoor == MoveToCarDoor.leftDoor)
-		//	{
-		//		var doorPosition = gameManager.carDriving.GetComponent<CarController>().leftDoor.transform.position;
-		//		transform.position = Vector3.MoveTowards(transform.position, doorPosition, speed / 5 * Time.deltaTime);
-		//		carDoor = MoveToCarDoor.none;
-		//	}
-		//	else
-		//	{
-		//		var doorPosition = gameManager.carDriving.GetComponent<CarController>().rightDoor.transform.position;
-		//		transform.position = Vector3.MoveTowards(transform.position, doorPosition, speed / 5 * Time.deltaTime);
-		//		carDoor = MoveToCarDoor.none;
-		//	}
-  //          if (isFisrtTimeOpenDoor)
-		//	{
-		//		StartCoroutine(moveToCarDoor());
-		//		isFisrtTimeOpenDoor = false;
-		//	}
-		//}
-	}
-
-	private void OnCollisionEnter(Collision collision)
-	{
-		if (collision.gameObject.CompareTag("Ground"))
+        if (!openTheDoor)
 		{
-			isGrounded = true;
-		}
-        if (collision.gameObject.CompareTag("Vehicle"))
-        {
-			Debug.Log("Touch Vehicle");
-			isTouchVehicle = true;
-			carDoor = transform.position.x - collision.transform.position.x > 0 ? MoveToCarDoor.rightDoor : MoveToCarDoor.leftDoor;
-		}
-	}
-    private void OnCollisionStay(Collision collision)
-    {
-		if (collision.gameObject.CompareTag("Vehicle"))
-		{
-			Debug.Log("Touch Vehicle");
-			isTouchVehicle = true;
-			carDoor = transform.position.x - collision.transform.position.x > 0 ? MoveToCarDoor.rightDoor : MoveToCarDoor.leftDoor;
+			Movement();
 		}
 	}
 
-    private void OnCollisionExit(Collision collision)
-	{
-		if (collision.gameObject.CompareTag("Ground"))
-		{
-			isGrounded = false;
-		}
-		if (collision.gameObject.CompareTag("Vehicle"))
-		{
-			Debug.Log("Touch Vehicle");
-			isTouchVehicle = false;
-			carDoor = MoveToCarDoor.none;
-		}
-	}
 
 	void Update()
 	{
-
 		ReceiveKeyInput();
-
 		if (movement != Vector3.zero)
 		{
 			rb.transform.rotation = Quaternion.LookRotation(movement);
 		}
-
 		if (isGrounded == true)
 		{
 			animator.SetBool("isJumping", false);
 		}
-
+		SetPlayerPosition();
+    }
+	private void SetPlayerPosition()
+	{
+		if (isDriving)
+		{
+			transform.parent = gameManager.carDrive.transform;
+			transform.position = gameManager.carDrive.transform.position;
+			transform.rotation = gameManager.carDrive.transform.rotation;
+		}
+        if (exitCar)
+		{
+			Debug.Log("Hello");
+			exitCar = false;
+			StartCoroutine(AnimExitCar());
+        }
 	}
 	private void ReceiveKeyInput()
 	{
@@ -162,35 +124,74 @@ public class CubeMovement : MonoBehaviour
         {
             if (isTouchVehicle)
 			{
-				moveToCar = true;
+				openTheDoor = true;
+				gameManager.playerDrive = !gameManager.playerDrive;
+				StartCoroutine(AnimOpenCar());
+			}
+            if (!exitCar && !isTouchVehicle && openTheDoor)
+            {
+				exitCar = true;
 			}
         }
-	}
-	IEnumerator moveToCarDoor()
-    {
-		yield return new WaitForSeconds(1f);
-		moveToCar = false;
-		gameManager.playerDrive = !gameManager.playerDrive;
-		StartCoroutine(AnimOpenCar());
 	}
 	IEnumerator AnimOpenCar()
 	{
 		animator.SetBool("isEnterVehicle", gameManager.playerDrive);
+		rb.useGravity = false;
+		boxCollider.isTrigger = true;
 		yield return new WaitForSeconds(2f);
-		gameObject.SetActive(!gameManager.playerDrive);
+		isDriving = true;
+		animator.SetBool("isDriving",true); 
+	}
+	IEnumerator AnimExitCar()
+	{
+		animator.SetBool("isDriving", false);
+		gameManager.PlayerExitCar();
+		yield return new WaitForSeconds(5f);
+		transform.parent = null;
+		rb.useGravity = true;
+		boxCollider.isTrigger = false;
+		isDriving = false;
+		openTheDoor = false;
+        transform.position = gameManager.carDrive.transform.position + new Vector3(-1.2f, 0, 0);
+		animator.SetBool("isEnterVehicle", gameManager.playerDrive);
 	}
 	IEnumerator JumpAfterDelay(float delay)
 	{
 		yield return new WaitForSeconds(delay);
 		Jump();
 	}
+	IEnumerator RunOutStamina()
+    {
+		int coldown = 10;
+		while(coldown > 0)
+        {
+			coldown--;
+			yield return new WaitForSeconds(1f);
+        }
+		runOutStamina = false;
+		yield return null;
+    }
     private void Movement()
     {
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift) && currentStamina >1 && !runOutStamina)
         {
             maxVerticalInput = 1f;
             maxHorizontalInput = 1f;
+			currentStamina -= Time.deltaTime *10;
+			isRunning = true;
+			if(currentStamina < 1)
+            {
+				runOutStamina = true;
+				StartCoroutine(RunOutStamina());
+            }
         }
+        else
+        {
+			currentStamina = currentStamina > maxStamina ? maxStamina : currentStamina + (Time.deltaTime * 5);
+			isRunning = false;
+		}
+
         if (verticalInput > maxVerticalInput || horizontalInput > maxHorizontalInput)
         {
             verticalInput = verticalInput >= maxVerticalInput ? maxVerticalInput : verticalInput;
@@ -205,7 +206,6 @@ public class CubeMovement : MonoBehaviour
 		maxVerticalInput = 0.5f;
         maxHorizontalInput = 0.5f;
     }
-
     public void ManageMovement(float h, float v)
 	{
 		if (!isHandlingInput)
@@ -217,14 +217,8 @@ public class CubeMovement : MonoBehaviour
 		Vector3 horizontalMove = Camera.main.transform.right;
 
 		movement = forwardMove * v + horizontalMove * h;
-		if(h == 1 || v == 1)
-		{
-			movement = (movement.normalized * speed / 2) * Time.deltaTime;
-		}
-        else
-        {
-			movement = (movement.normalized * speed / 5) * Time.deltaTime;
-		}
+		speed = isRunning ? 3 : 1;
+		movement = (movement.normalized * speed) * Time.deltaTime;
 		GetComponent<Rigidbody>().MovePosition(transform.position + movement);
 
 		animator.SetFloat("moveX", h);
@@ -238,12 +232,10 @@ public class CubeMovement : MonoBehaviour
 			animator.SetBool("isMoving", false);
 		}
 	}
-	
 	public void Jump()
 	{
 		hasJumped = true;
 	}
-
 	private void ApplyJumpPhysics()
 	{
 		if (hasJumped)
@@ -252,7 +244,6 @@ public class CubeMovement : MonoBehaviour
 			hasJumped = false;
 		}
 	}
-
 	void CapVelocity()
 	{
 		Vector3 _velocity = GetComponent<Rigidbody>().velocity;
@@ -260,5 +251,37 @@ public class CubeMovement : MonoBehaviour
 		_velocity.y = Mathf.Clamp(_velocity.y, -maxVelocity.y, maxVelocity.y);
 		_velocity.z = Mathf.Clamp(_velocity.z, -maxVelocity.z, maxVelocity.z);
 		rb.velocity = _velocity;
+	}
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("Vehicle"))
+		{
+			isTouchVehicle = true;
+			gameManager.carDrive = other.transform.parent.gameObject;
+		}
+    }
+    private void OnTriggerExit(Collider other)
+	{
+		if (other.gameObject.CompareTag("Vehicle"))
+		{
+			isTouchVehicle = false;
+		}
+	}
+	private void OnCollisionEnter(Collision collision)
+	{
+		if (collision.gameObject.CompareTag("Ground"))
+		{
+			isGrounded = true;
+		}
+	}
+	private void OnCollisionStay(Collision collision)
+	{
+	}
+	private void OnCollisionExit(Collision collision)
+	{
+		if (collision.gameObject.CompareTag("Ground"))
+		{
+			isGrounded = false;
+		}
 	}
 }
