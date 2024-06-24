@@ -102,7 +102,6 @@ public class CubeMovement : MonoBehaviour
 		}
         if (exitCar)
 		{
-			Debug.Log("Hello");
 			exitCar = false;
 			StartCoroutine(AnimExitCar());
         }
@@ -165,7 +164,7 @@ public class CubeMovement : MonoBehaviour
     {
 		if (Input.GetKey(KeyCode.LeftShift) && currentStamina > 1 && !runOutStamina)
 		{
-			if (verticalInput > 0 || horizontalInput > 0)
+			if (verticalInput != 0 || horizontalInput != 0)
 			{
 				maxVerticalInput = 1f;
 				maxHorizontalInput = 1f;

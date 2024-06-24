@@ -17,8 +17,6 @@ public class UiManager : MonoBehaviour
     void Update()
     {
         staminaBar.maxValue = playerController.maxStamina;
-        Debug.Log(playerController.maxStamina);
         staminaBar.value = playerController.currentStamina;
-        Debug.Log(playerController.currentStamina);
     }
 }

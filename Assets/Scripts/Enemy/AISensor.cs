@@ -10,9 +10,15 @@ public class AISensor : MonoBehaviour
     public Color meshColor = Color.red;
     Mesh mesh;
 
+    public LayerMask targetMask;
+    public LayerMask obstructionMask;
+
+    public bool canSeePlayer;
+
     // Start is called before the first frame update
     void Start()
     {
+        StartCoroutine(FOVRoutine());
     }
 
     // Update is called once per frame
@@ -21,10 +27,51 @@ public class AISensor : MonoBehaviour
         
     }
 
+    IEnumerator FOVRoutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(0.2f);
+            FieldOfViewCheck();
+        }
+    }
+    private void FieldOfViewCheck()
+    {
+        Collider[] rangeChecks = Physics.OverlapSphere(transform.position, angle, targetMask);
+
+        if(rangeChecks.Length != 0)
+        {
+            Transform target = rangeChecks[0].transform;
+            Vector3 directionToTarget = (target.position - transform.position).normalized;
+            if (Vector3.Angle(transform.forward, directionToTarget) < angle)
+            {
+                float distanceToTarget = Vector3.Distance(transform.position, target.position);
+                if(!Physics.Raycast(transform.position,directionToTarget,distanceToTarget,obstructionMask))
+                {
+                    canSeePlayer = true;
+                }
+                else
+                {
+                    canSeePlayer = false;
+                }
+            }
+            else
+            {
+                canSeePlayer = false;
+            }
+        }
+        else if (canSeePlayer)
+        {
+            canSeePlayer = false;
+        }
+    }
+
     Mesh CreateWedgeMesh()
     {
         Mesh mesh = new Mesh();
-        int numTriangles = 8;
+
+        int segments = 10;
+        int numTriangles = (segments * 4) + 2 + 2;
         int numVertices = numTriangles * 3;
 
         Vector3[] vertices = new Vector3[numVertices];
@@ -57,24 +104,38 @@ public class AISensor : MonoBehaviour
         vertices[vert++] = bottomRight;
         vertices[vert++] = bottomCenter;
 
-        //far side
-        vertices[vert++] = bottomLeft;
-        vertices[vert++] = bottomRight;
-        vertices[vert++] = topRight;
+        float currentAngle = -angle;
+        float deltaAngle = (angle * 2) / segments;
+        for (int i = 0; i < segments; ++i)
+        {
+            bottomLeft = Quaternion.Euler(0, currentAngle, 0) * Vector3.forward * distance;
+            bottomRight = Quaternion.Euler(0, currentAngle + deltaAngle, 0) * Vector3.forward * distance;
 
-        vertices[vert++] = topRight;
-        vertices[vert++] = topLeft;
-        vertices[vert++] = bottomLeft;
+            topLeft = bottomLeft + Vector3.up * height;
+            topRight = bottomRight + Vector3.up * height;
 
-        //top side
-        vertices[vert++] = topCenter;
-        vertices[vert++] = topLeft;
-        vertices[vert++] = topRight;
+            //far side
+            vertices[vert++] = bottomLeft;
+            vertices[vert++] = bottomRight;
+            vertices[vert++] = topRight;
 
-        //bottom side
-        vertices[vert++] = bottomCenter;
-        vertices[vert++] = bottomLeft;
-        vertices[vert++] = bottomRight;
+            vertices[vert++] = topRight;
+            vertices[vert++] = topLeft;
+            vertices[vert++] = bottomLeft;
+
+            //top side
+            vertices[vert++] = topCenter;
+            vertices[vert++] = topLeft;
+            vertices[vert++] = topRight;
+
+            //bottom side
+            vertices[vert++] = bottomCenter;
+            vertices[vert++] = bottomLeft;
+            vertices[vert++] = bottomRight;
+
+            currentAngle += deltaAngle;
+        }
+       
 
         for(int i = 0; i < numVertices; i++)
         {
@@ -95,7 +156,7 @@ public class AISensor : MonoBehaviour
         if (mesh)
         {
             Gizmos.color = meshColor;
-            Gizmos.DrawMesh(mesh, transform.position, transform.rotation);
+            Gizmos.DrawMesh(mesh, transform.position + new Vector3(0, 0.84f, 0), transform.rotation);
         }
     }
 }
