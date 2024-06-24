@@ -102,7 +102,6 @@ public class CubeMovement : MonoBehaviour
 		}
         if (exitCar)
 		{
-			Debug.Log("Hello");
 			exitCar = false;
 			StartCoroutine(AnimExitCar());
         }
@@ -161,6 +160,34 @@ public class CubeMovement : MonoBehaviour
 		yield return new WaitForSeconds(delay);
 		Jump();
 	}
+	private void CheckPlayerRun()
+    {
+		if (Input.GetKey(KeyCode.LeftShift) && currentStamina > 1 && !runOutStamina)
+		{
+			if (verticalInput != 0 || horizontalInput != 0)
+			{
+				maxVerticalInput = 1f;
+				maxHorizontalInput = 1f;
+				currentStamina -= Time.deltaTime * 10;
+				isRunning = true;
+				if (currentStamina < 1)
+				{
+					runOutStamina = true;
+					StartCoroutine(RunOutStamina());
+				}
+			}
+			else
+			{
+				currentStamina = currentStamina > maxStamina ? maxStamina : currentStamina + (Time.deltaTime * 5);
+				isRunning = false;
+			}
+		}
+		else
+		{
+			currentStamina = currentStamina > maxStamina ? maxStamina : currentStamina + (Time.deltaTime * 5);
+			isRunning = false;
+		}
+	}
 	IEnumerator RunOutStamina()
     {
 		int coldown = 10;
@@ -173,24 +200,8 @@ public class CubeMovement : MonoBehaviour
 		yield return null;
     }
     private void Movement()
-    {
-        if (Input.GetKey(KeyCode.LeftShift) && currentStamina >1 && !runOutStamina)
-        {
-            maxVerticalInput = 1f;
-            maxHorizontalInput = 1f;
-			currentStamina -= Time.deltaTime *10;
-			isRunning = true;
-			if(currentStamina < 1)
-            {
-				runOutStamina = true;
-				StartCoroutine(RunOutStamina());
-            }
-        }
-        else
-        {
-			currentStamina = currentStamina > maxStamina ? maxStamina : currentStamina + (Time.deltaTime * 5);
-			isRunning = false;
-		}
+	{
+		CheckPlayerRun();
 
         if (verticalInput > maxVerticalInput || horizontalInput > maxHorizontalInput)
         {
