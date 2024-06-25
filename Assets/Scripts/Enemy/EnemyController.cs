@@ -15,15 +15,17 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private GameObject parentObject;
     [SerializeField] private GameObject tempParentObject;
     public List<Transform> wayPoints = new List<Transform>();
-    [SerializeField] private Transform targetTransform;
+    public Transform targetTransform;
     public NavMeshAgent agent;
     private Animator animator;
     private AISensor sensor;
 
     public bool isAllowAttack;
+    private float attackPoint;
     // Start is called before the first frame update
     void Start()
     {
+        attackPoint = 100f;
         animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
         sensor = GetComponent<AISensor>();
@@ -39,7 +41,7 @@ public class EnemyController : MonoBehaviour
     void Update()
     {
         BehaviousController();
-        CheckFollowPlayer();
+        CheckSeePlayer();
     }
     private void BehaviousController()
     {
@@ -56,36 +58,27 @@ public class EnemyController : MonoBehaviour
                 }
             case EnemyBehavious.FollowPlayer:
                 {
-                    FollowPlayer();
                     break;
                 }
             default: break;
         }
     }
-    private void CheckFollowPlayer()
+    public float GetEnemyAttackPoint()
+    {
+        return attackPoint;
+    }
+    private void CheckSeePlayer()
     {
         if (!sensor.canSeePlayer && enemyBehavious == EnemyBehavious.FollowPlayer)
         {
             enemyBehavious = EnemyBehavious.Idle;
-            animator.SetBool("isIdleState", true);
-            agent.SetDestination(agent.transform.position);
         }
     }
-    private void FollowPlayer()
+    public void EndNormalAttack()
     {
-        agent.SetDestination(targetTransform.position);
-        float distance = Vector3.Distance(transform.position, targetTransform.position);
-        if (distance < 0.5f && isAllowAttack)
-        {
-            isAllowAttack = false;
-            StartCoroutine(NormalAttack());
-        }
-    }
-    IEnumerator NormalAttack()
-    {
-        Debug.Log("attack");
-        animator.SetBool("normalAttack", true);
-        yield return new WaitForSeconds(1f);
+
+        animator.SetBool("seePlayer", true);
         animator.SetBool("normalAttack", false);
     }
+
 }

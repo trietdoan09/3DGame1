@@ -2,47 +2,40 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyPatrolling : StateMachineBehaviour
+public class EnemyFollowPlayer : StateMachineBehaviour
 {
-    float timer;
-    EnemyController enemyMovement;
     AISensor sensor;
+    EnemyController enemyMovement;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.SetBool("isIdleState", false);
-        enemyMovement = animator.GetComponent<EnemyController>();
-        enemyMovement.enemyBehavious = EnemyController.EnemyBehavious.Patrolling;
         sensor = animator.GetComponent<AISensor>();
-        timer = 0;
-        enemyMovement.agent.SetDestination(enemyMovement.wayPoints[Random.Range(0, enemyMovement.wayPoints.Count)].position);
+        enemyMovement = animator.GetComponent<EnemyController>();
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        //k thay player
         if (!sensor.canSeePlayer)
         {
-            if (enemyMovement.agent.remainingDistance <= enemyMovement.agent.stoppingDistance)
-                enemyMovement.agent.SetDestination(enemyMovement.wayPoints[Random.Range(0, enemyMovement.wayPoints.Count)].position);
-            timer += Time.deltaTime;
-            if (timer > 10)
-            {
-                animator.SetBool("isPatrolling", false);
-            }
+            animator.SetBool("seePlayer", false);
+            animator.SetBool("isIdleState", true);
+            enemyMovement.agent.SetDestination(enemyMovement.agent.transform.position);
         }
-        else
+        //thay player
+        enemyMovement.agent.SetDestination(enemyMovement.targetTransform.position);
+        float distance = Vector3.Distance(enemyMovement.transform.position, enemyMovement.targetTransform.position);
+        if (distance < 0.5f && enemyMovement.isAllowAttack)
         {
-            animator.SetBool("isPatrolling", false);
-            animator.SetBool("seePlayer", true);
-            enemyMovement.enemyBehavious = EnemyController.EnemyBehavious.FollowPlayer;
+            animator.SetBool("normalAttack", true);
         }
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        enemyMovement.agent.SetDestination(enemyMovement.agent.transform.position);
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()
