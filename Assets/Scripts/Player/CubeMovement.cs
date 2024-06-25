@@ -43,16 +43,13 @@ public class CubeMovement : MonoBehaviour
 	private float speed = 1f;
 	private bool isRunning;
 
-	[Header("Player Status")]
-	public float maxStamina;
-	public float currentStamina;
-	[SerializeField] private bool runOutStamina;
-
+	private PlayerManager playerManager;
 
 	void Awake()
 	{
 		rb = GetComponent<Rigidbody>();
 		boxCollider = GetComponent<BoxCollider>();
+		playerManager = GetComponent<PlayerManager>();
 	}
     private void Start()
     {
@@ -62,8 +59,6 @@ public class CubeMovement : MonoBehaviour
 		isDriving = false;
 		openTheDoor = false;
 		exitCar = false;
-		maxStamina = 100;
-		currentStamina = maxStamina;
 		isRunning = false;
 	}
     void FixedUpdate()
@@ -162,29 +157,29 @@ public class CubeMovement : MonoBehaviour
 	}
 	private void CheckPlayerRun()
     {
-		if (Input.GetKey(KeyCode.LeftShift) && currentStamina > 1 && !runOutStamina)
+		if (Input.GetKey(KeyCode.LeftShift) && playerManager.currentStaminaPoint > 1 && !playerManager.runOutStamina)
 		{
 			if (verticalInput != 0 || horizontalInput != 0)
 			{
 				maxVerticalInput = 1f;
 				maxHorizontalInput = 1f;
-				currentStamina -= Time.deltaTime * 10;
+				playerManager.currentStaminaPoint -= Time.deltaTime * 10;
 				isRunning = true;
-				if (currentStamina < 1)
+				if (playerManager.currentStaminaPoint < 1)
 				{
-					runOutStamina = true;
+					playerManager.runOutStamina = true;
 					StartCoroutine(RunOutStamina());
 				}
 			}
 			else
 			{
-				currentStamina = currentStamina > maxStamina ? maxStamina : currentStamina + (Time.deltaTime * 5);
+				playerManager.currentStaminaPoint = playerManager.currentStaminaPoint > playerManager.maxStaminaPoint ? playerManager.maxStaminaPoint : playerManager.currentStaminaPoint + (Time.deltaTime * 5);
 				isRunning = false;
 			}
 		}
 		else
 		{
-			currentStamina = currentStamina > maxStamina ? maxStamina : currentStamina + (Time.deltaTime * 5);
+			playerManager.currentStaminaPoint = playerManager.currentStaminaPoint > playerManager.maxStaminaPoint ? playerManager.maxStaminaPoint : playerManager.currentStaminaPoint + (Time.deltaTime * 5);
 			isRunning = false;
 		}
 	}
@@ -196,7 +191,7 @@ public class CubeMovement : MonoBehaviour
 			coldown--;
 			yield return new WaitForSeconds(1f);
         }
-		runOutStamina = false;
+		playerManager.runOutStamina = false;
 		yield return null;
     }
     private void Movement()

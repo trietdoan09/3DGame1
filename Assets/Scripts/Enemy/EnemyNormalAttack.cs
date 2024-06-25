@@ -8,6 +8,7 @@ public class EnemyNormalAttack : StateMachineBehaviour
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.SetBool("seePlayer", false);
+        animator.GetComponent<EnemyController>().isAllowAttack = false;
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -20,7 +21,6 @@ public class EnemyNormalAttack : StateMachineBehaviour
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.GetComponent<EnemyController>().isAllowAttack = true;
-        animator.SetBool("seePlayer", true);
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()
