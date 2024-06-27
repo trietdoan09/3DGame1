@@ -25,7 +25,7 @@ public class EnemyController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        attackPoint = 100f;
+        attackPoint = 20f;
         animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
         sensor = GetComponent<AISensor>();

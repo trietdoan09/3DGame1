@@ -67,7 +67,7 @@ public class CubeMovement : MonoBehaviour
         //CapVelocity();
         horizontalInput = Input.GetAxis("Horizontal");
 		verticalInput = Input.GetAxis("Vertical");
-        if (!openTheDoor)
+        if (!openTheDoor && !playerManager.runOutStamina)
 		{
 			Movement();
 		}
@@ -168,7 +168,7 @@ public class CubeMovement : MonoBehaviour
 				if (playerManager.currentStaminaPoint < 1)
 				{
 					playerManager.runOutStamina = true;
-					StartCoroutine(RunOutStamina());
+					StartCoroutine(playerManager.RunOutStamina());
 				}
 			}
 			else
@@ -183,17 +183,6 @@ public class CubeMovement : MonoBehaviour
 			isRunning = false;
 		}
 	}
-	IEnumerator RunOutStamina()
-    {
-		int coldown = 10;
-		while(coldown > 0)
-        {
-			coldown--;
-			yield return new WaitForSeconds(1f);
-        }
-		playerManager.runOutStamina = false;
-		yield return null;
-    }
     private void Movement()
 	{
 		CheckPlayerRun();
