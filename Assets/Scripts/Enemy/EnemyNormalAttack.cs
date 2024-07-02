@@ -9,6 +9,7 @@ public class EnemyNormalAttack : StateMachineBehaviour
     {
         animator.SetBool("seePlayer", false);
         animator.GetComponent<EnemyController>().isAllowAttack = false;
+        animator.GetComponent<EnemyController>().enemyBehavious = EnemyController.EnemyBehavious.Attack;
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

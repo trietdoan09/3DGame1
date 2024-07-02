@@ -4,12 +4,6 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-    public enum PlayerDefendStatus
-    {
-        Dodge,
-        Block,
-        PerfectBlock
-    }
     // Start is called before the first frame update
     public float maxStaminaPoint;
     public float currentStaminaPoint;
@@ -17,11 +11,10 @@ public class PlayerManager : MonoBehaviour
     public float currentHealthPoint;
     public float maxManaPoint;
     public float currentManaPoint;
+    public float playerAttack;
     public bool runOutStamina;
+    public bool isImmortal;
 
-    public bool dodge;
-    public bool block;
-    public bool perfectBlock;
 
     Animator animator;
     private void Awake()
@@ -36,14 +29,6 @@ public class PlayerManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButton(1))
-        {
-            animator.SetBool("isBlock", true);
-        }
-        if (Input.GetMouseButtonUp(1))
-        {
-            animator.SetBool("isBlock", false);
-        }
     }
     private void CreateCharacterStatus()
     {
@@ -53,13 +38,38 @@ public class PlayerManager : MonoBehaviour
         currentHealthPoint = maxHealthPoint;
         currentManaPoint = maxManaPoint;
         currentStaminaPoint = maxStaminaPoint;
+        playerAttack = 20f;
     }
-    private void OnTriggerEnter(Collider other)
+    public void PlayerTakeDamage(float damage)
     {
-
-        if (other.gameObject.tag == "EnemyWeapon")
-        {   
-            Debug.Log(other.gameObject.GetComponentInParent<EnemyController>().GetEnemyAttackPoint());
+        currentHealthPoint = currentHealthPoint - damage <= 0 ? 0 : currentHealthPoint - damage;
+    }
+    public void PlayerBlockAttack(float damage)
+    {
+        if(currentStaminaPoint - damage <= 0)
+        {
+            runOutStamina = true;
+            animator.SetBool("isKnockedOut", true);
+            StartCoroutine(RunOutStamina());
         }
+        currentStaminaPoint = currentStaminaPoint - damage <= 0 ? 0 : currentStaminaPoint - damage;
+    }
+    public IEnumerator RunOutStamina()
+    {
+        int coldown = 5;
+        while (coldown > 0)
+        {
+            coldown--;
+            yield return new WaitForSeconds(1f);
+        }
+        runOutStamina = false;
+        yield return null;
+        animator.SetBool("isKnockedOut", false);
+        isImmortal = true;
+        Invoke("Immortal", 4f);
+    }
+    private void Immortal()
+    {
+        isImmortal = false;
     }
 }

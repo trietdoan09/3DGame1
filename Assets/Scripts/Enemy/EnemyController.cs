@@ -9,7 +9,8 @@ public class EnemyController : MonoBehaviour
     {
         Idle,
         Patrolling,
-        FollowPlayer
+        FollowPlayer,
+        Attack
     }
     public EnemyBehavious enemyBehavious;
     [SerializeField] private GameObject parentObject;
@@ -19,13 +20,14 @@ public class EnemyController : MonoBehaviour
     public NavMeshAgent agent;
     private Animator animator;
     private AISensor sensor;
+    [SerializeField] private List<BoxCollider> activeWeapons;
 
     public bool isAllowAttack;
     private float attackPoint;
     // Start is called before the first frame update
     void Start()
     {
-        attackPoint = 100f;
+        attackPoint = 20f;
         animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
         sensor = GetComponent<AISensor>();
@@ -42,6 +44,35 @@ public class EnemyController : MonoBehaviour
     {
         BehaviousController();
         CheckSeePlayer();
+        EnemyRotateFace();
+        ActiveColliderWeapons();
+    }
+    private void ActiveColliderWeapons()
+    {
+        if(enemyBehavious == EnemyBehavious.Attack)
+        {
+            foreach(var weapon in activeWeapons)
+            {
+                weapon.enabled = true;
+            }
+        }
+        else
+        {
+            foreach (var weapon in activeWeapons)
+            {
+                weapon.enabled = false;
+            }
+        }
+    }
+    private void EnemyRotateFace()
+    {
+        if (sensor.canSeePlayer)
+        {
+            Vector3 direction = targetTransform.position - transform.position;
+            direction.y = 0f;
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = targetRotation;
+        }
     }
     private void BehaviousController()
     {
@@ -76,9 +107,11 @@ public class EnemyController : MonoBehaviour
     }
     public void EndNormalAttack()
     {
-
-        animator.SetBool("seePlayer", true);
-        animator.SetBool("normalAttack", false);
+        if ( Vector3.Distance(transform.position, targetTransform.position) > 0.5f)
+        {
+            animator.SetBool("seePlayer", true);
+            animator.SetBool("normalAttack", false);
+        }
     }
 
 }
