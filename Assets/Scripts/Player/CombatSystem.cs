@@ -15,11 +15,13 @@ public class CombatSystem : MonoBehaviour
 
     Animator animator;
     private PlayerManager playerManager;
+    [SerializeField] private bool enemyBehindPlayer;
     // Start is called before the first frame update
     void Start()
     {
         animator = gameObject.GetComponent<Animator>();
         playerManager = gameObject.GetComponent<PlayerManager>();
+        enemyBehindPlayer = false;
     }
 
     // Update is called once per frame
@@ -55,16 +57,35 @@ public class CombatSystem : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        var enemyDamage = other.gameObject.GetComponentInParent<EnemyController>().GetEnemyAttackPoint();
-        Debug.Log(enemyDamage);
+        if(other.transform.position.z - transform.position.z < 0)
+        {
+            var royEnemy = other.transform.rotation.eulerAngles.y > 180 ? other.transform.rotation.eulerAngles.y - 360 : other.transform.rotation.eulerAngles.y;
+            var royPlayer = transform.rotation.eulerAngles.y > 180 ? transform.rotation.eulerAngles.y - 360 : transform.rotation.eulerAngles.y;
+            if (royEnemy > 0 && royPlayer > 0 || royEnemy < 0 && royPlayer < 0)
+            {
+                enemyBehindPlayer = true;
+            }
+            else
+            {
+                enemyBehindPlayer = false;
+            }
+        }
         if (other.gameObject.tag == "EnemyWeapon")
         {
+            var enemyDamage = other.gameObject.GetComponentInParent<EnemyController>().GetEnemyAttackPoint();
             switch (defendStatus)
             {
                 case PlayerDefendStatus.Block:
                     {
+                        if (enemyBehindPlayer)
+                        {
+                            playerManager.PlayerTakeDamage(enemyDamage);
+                        }
+                        else
+                        {
+                            playerManager.PlayerBlockAttack(enemyDamage);
+                        }
                         Debug.Log("Block");
-                        playerManager.PlayerBlockAttack(enemyDamage);
                         break;
                     }
                 case PlayerDefendStatus.PerfectBlock:
@@ -84,6 +105,23 @@ public class CombatSystem : MonoBehaviour
                         break;
                     }
                 default: break;
+            }
+        }
+    }
+    private void OnTriggerStay(Collider other)
+    {
+
+        if (other.transform.position.z - transform.position.z < 0)
+        {
+            var royEnemy = other.transform.rotation.eulerAngles.y > 180 ? other.transform.rotation.eulerAngles.y - 360 : other.transform.rotation.eulerAngles.y;
+            var royPlayer = transform.rotation.eulerAngles.y > 180 ? transform.rotation.eulerAngles.y - 360 : transform.rotation.eulerAngles.y;
+            if (royEnemy > 0 && royPlayer > 0 || royEnemy < 0 && royPlayer < 0)
+            {
+                enemyBehindPlayer = true;
+            }
+            else
+            {
+                enemyBehindPlayer = false;
             }
         }
     }

@@ -9134,6 +9134,9 @@ MonoBehaviour:
   wayPoints: []
   targetTransform: {fileID: 0}
   agent: {fileID: 0}
+  activeWeapons:
+  - {fileID: 5931361788803889097}
+  - {fileID: 2656270106866795173}
   isAllowAttack: 0
 --- !u!4 &4560868770256754560
 Transform:
@@ -11092,6 +11095,25 @@ PrefabInstance:
     - target: {fileID: 8502481037367443020, guid: 57d934e6a4e5a6242a4e74f557a4a427, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 8736852046304787575, guid: 57d934e6a4e5a6242a4e74f557a4a427, type: 3}
+      propertyPath: m_Avatar
+      value: 
+      objectReference: {fileID: 9000000, guid: 4d67d65a551ae9a41b3d58c8b5c6e749, type: 3}
+    - target: {fileID: 8736852046304787575, guid: 57d934e6a4e5a6242a4e74f557a4a427, type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'mixamorig9:Hips'\n\tTransform 'mixamorig9:LeftHandRing3'\n\tTransform
+        'mixamorig9:RightHandRing1'\n\tTransform 'mixamorig9:LeftHandPinky3'\n\tTransform
+        'mixamorig9:LeftHandIndex2'\n\tTransform 'mixamorig9:RightHandThumb2'\n\tTransform
+        'mixamorig9:LeftForeArm'\n\tTransform 'mixamorig9:LeftFoot'\n\tTransform
+        'mixamorig9:RightHandThumb3'\n\tTransform 'mixamorig9:RightHandPinky1'\n\tand
+        more ...\n\tFrom animation clip 'Walking'\n\tFrom animation clip 'Walking'\n\tFrom
+        animation clip 'Walking'\n\tFrom animation clip 'Walking'\n\tFrom animation
+        clip 'Running'\n\tFrom animation clip 'Running'\n\tFrom animation clip 'Running'\n\tFrom
+        animation clip 'Running'\n\tFrom animation clip 'Walking'\n\tFrom animation
+        clip 'Walking'\n\tand more ..."
       objectReference: {fileID: 0}
     - target: {fileID: 9130258623605744886, guid: 57d934e6a4e5a6242a4e74f557a4a427, type: 3}
       propertyPath: m_RootOrder

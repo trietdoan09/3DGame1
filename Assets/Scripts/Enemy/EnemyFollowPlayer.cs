@@ -12,6 +12,7 @@ public class EnemyFollowPlayer : StateMachineBehaviour
         animator.SetBool("isIdleState", false);
         sensor = animator.GetComponent<AISensor>();
         enemyMovement = animator.GetComponent<EnemyController>();
+        animator.GetComponent<EnemyController>().enemyBehavious = EnemyController.EnemyBehavious.FollowPlayer;
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
