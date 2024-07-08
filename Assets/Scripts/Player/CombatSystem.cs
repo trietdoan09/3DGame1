@@ -72,7 +72,7 @@ public class CombatSystem : MonoBehaviour
         }
         if (other.gameObject.tag == "EnemyWeapon")
         {
-            var enemyDamage = other.gameObject.GetComponentInParent<EnemyController>().GetEnemyAttackPoint();
+            var enemyDamage = other.gameObject.GetComponentInParent<EnemyStatusManager>().GetEnemyAttackPoint();
             switch (defendStatus)
             {
                 case PlayerDefendStatus.Block:
@@ -83,13 +83,22 @@ public class CombatSystem : MonoBehaviour
                         }
                         else
                         {
-                            playerManager.PlayerBlockAttack(enemyDamage);
+                            other.gameObject.GetComponentInParent<EnemyStatusManager>().IncreaseEnemyCurrentBreakPoint(playerManager.playerAttack);
+                            //playerManager.PlayerBlockAttack(enemyDamage);
                         }
                         Debug.Log("Block");
                         break;
                     }
                 case PlayerDefendStatus.PerfectBlock:
                     {
+                        if (enemyBehindPlayer)
+                        {
+                            playerManager.PlayerTakeDamage(enemyDamage);
+                        }
+                        else
+                        {
+                            other.gameObject.GetComponentInParent<EnemyStatusManager>().IncreaseEnemyCurrentBreakPoint(playerManager.playerAttack);
+                        }
                         Debug.Log("PerfectBlock");
                         break;
                     }

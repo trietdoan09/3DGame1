@@ -24,7 +24,7 @@ public class CameraMovement : MonoBehaviour {
 	[Tooltip ("Minimum allowed distance between camera and target."), SerializeField]
 	private float distanceMin = 0.5f;
 	[Tooltip ("Maximum allowed distance between camera and target"), SerializeField]
-	private float distanceMax = 10f;
+	private float distanceMax = 5f;
 
 	[Tooltip ("Radius of the thin SphereCast, used to detect camera collisions."), SerializeField]
 	private float thinRadius = 0.15f;
