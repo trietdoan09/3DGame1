@@ -16,18 +16,22 @@ public class CombatSystem : MonoBehaviour
     Animator animator;
     private PlayerManager playerManager;
     [SerializeField] private bool enemyBehindPlayer;
+    [SerializeField] private bool isAttack;
+    public float countAttack;
     // Start is called before the first frame update
     void Start()
     {
         animator = gameObject.GetComponent<Animator>();
         playerManager = gameObject.GetComponent<PlayerManager>();
         enemyBehindPlayer = false;
+        isAttack = false;
     }
 
     // Update is called once per frame
     void Update()
     {
         PlayerParry();
+        AttackSystem();
     }
 
     private void PlayerParry()
@@ -37,9 +41,45 @@ public class CombatSystem : MonoBehaviour
         {
             animator.SetBool("isBlock", true);
         }
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (!isAttack)
+            {
+                isAttack = true;
+                animator.SetBool("isAttack", true);
+            }
+            else
+            {
+                Debug.Log("in here");
+                countAttack = 1;
+            }
+        }
         if (Input.GetMouseButtonUp(1))
         {
             animator.SetBool("isBlock", false);
+        }
+    }
+    private void AttackSystem()
+    {
+        if (isAttack)
+        {
+            EndAttack();
+        }
+    }
+    public void EndAttack()
+    {
+        if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
+        {
+            if (countAttack > 0)
+            {
+                animator.SetFloat("continueAttack", countAttack);
+                countAttack = 0;
+            }
+            else
+            {
+                animator.SetBool("isAttack", false);
+                isAttack = false;
+            }
         }
     }
     public void PerfectBlock()
@@ -77,15 +117,8 @@ public class CombatSystem : MonoBehaviour
             {
                 case PlayerDefendStatus.Block:
                     {
-                        if (enemyBehindPlayer)
-                        {
-                            playerManager.PlayerTakeDamage(enemyDamage);
-                        }
-                        else
-                        {
-                            other.gameObject.GetComponentInParent<EnemyStatusManager>().IncreaseEnemyCurrentBreakPoint(playerManager.playerAttack);
-                            //playerManager.PlayerBlockAttack(enemyDamage);
-                        }
+                        other.gameObject.GetComponentInParent<EnemyStatusManager>().IncreaseEnemyCurrentBreakPoint(playerManager.playerAttack);
+                        playerManager.PlayerTakeDamage(enemyDamage/2);
                         Debug.Log("Block");
                         break;
                     }
