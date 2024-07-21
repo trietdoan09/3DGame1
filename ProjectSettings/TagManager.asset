@@ -8,6 +8,7 @@ TagManager:
   - Vehicle
   - Zombie
   - EnemyWeapon
+  - PlayerWeapon
   layers:
   - Default
   - TransparentFX

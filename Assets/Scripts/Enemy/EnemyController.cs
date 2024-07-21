@@ -160,5 +160,11 @@ public class EnemyController : MonoBehaviour
         animator.SetBool("isStune", false);
         enemyStatusManager.SetEnemyCurrentBreakPoint(0);
     }
-
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "PlayerWeapon")
+        {
+            Debug.Log("Hello");
+        }
+    }
 }

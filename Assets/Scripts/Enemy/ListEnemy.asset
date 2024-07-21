@@ -21,4 +21,4 @@ MonoBehaviour:
     maxRank: 4
     enemyMaxHealth: 100
     enemyMaxBreakPoint: 100
-    attackPoint: 10
+    attackPoint: 1
