@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: WildFruit
   m_EditorClassIdentifier: 
   <IsStackable>k__BackingField: 1
-  <MaxStackSize>k__BackingField: 99
+  <MaxStackSize>k__BackingField: 20
   <Name>k__BackingField: Wild Fruit
   <Description>k__BackingField: Can eat and reduce hunger
   <ItemImage>k__BackingField: {fileID: 21300000, guid: dddfe84b2cf14f849b548a525a674bba, type: 3}
+  <DefaultParametersList>k__BackingField: []
   modifierData: []
+  <actionSFX>k__BackingField: {fileID: 0}

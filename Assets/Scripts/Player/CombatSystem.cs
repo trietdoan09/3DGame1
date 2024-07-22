@@ -50,7 +50,6 @@ public class CombatSystem : MonoBehaviour
             }
             else
             {
-                Debug.Log("in here");
                 countAttack = 1;
             }
         }

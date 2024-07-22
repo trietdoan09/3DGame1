@@ -28,6 +28,8 @@ public class PlayerManager : MonoBehaviour
     void Start()
     {
         animator = gameObject.GetComponent<Animator>();
+        StartCoroutine(PlayerHunger());
+        StartCoroutine(PlayerThirsty());
     }
 
     // Update is called once per frame
@@ -86,6 +88,30 @@ public class PlayerManager : MonoBehaviour
                     break;
                 }
             default:break;
+        }
+    }
+    IEnumerator PlayerHunger()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(1f);
+            currentFoodPoint = currentFoodPoint - 10 < 1 ? 0 : currentFoodPoint - 10;
+            if(currentFoodPoint < 1)
+            {
+                currentHealthPoint -= 5f;
+            }
+        }
+    }
+    IEnumerator PlayerThirsty()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(1f);
+            currentDrinkPoint = currentDrinkPoint - 15 < 1 ? 0 : currentFoodPoint - 10;
+            if(currentFoodPoint < 1)
+            {
+                currentHealthPoint -= 1f;
+            }
         }
     }
     public void PlayerBlockAttack(float damage)

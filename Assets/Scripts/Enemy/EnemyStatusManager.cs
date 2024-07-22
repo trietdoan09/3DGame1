@@ -128,4 +128,23 @@ public class EnemyStatusManager : MonoBehaviour
         breakBarLeft.value = enemyCurrentBreakPoint;
         breakBarRight.value = enemyCurrentBreakPoint;
     }
+    public void EnemyTakeDame(float dame)
+    {
+        enemyCurrentHealth = enemyCurrentHealth - dame < 1 ? 0 : enemyCurrentHealth - dame;
+        if (enemyCurrentHealth < 1)
+        {
+            var item =  Instantiate(dropItem[Random.Range(0, dropItem.Length)]);
+            item.transform.position = new Vector3(transform.position.x, 0.05f, transform.position.z);
+            Destroy(gameObject);
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "PlayerWeapon")
+        {
+            Debug.Log("punch enemy");
+            var dame = other.gameObject.GetComponentInParent<PlayerManager>().playerAttack;
+            EnemyTakeDame(dame);
+        }
+    }
 }

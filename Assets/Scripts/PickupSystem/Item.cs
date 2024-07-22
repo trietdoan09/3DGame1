@@ -19,10 +19,11 @@ public class Item : MonoBehaviour
     void Start()
     {
         //GetComponent<SpriteRenderer>().sprite = InventoryItem.ItemImage;
+        Quantity = UnityEngine.Random.Range(1, 5);
     }
     public void DestroyItem()
     {
-        //GetComponent<BoxCollider>().enabled = false;
+        GetComponent<Collider>().enabled = false;
         StartCoroutine(AnimateItemPickup());
     }
 

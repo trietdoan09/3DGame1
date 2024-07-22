@@ -16,7 +16,9 @@ MonoBehaviour:
   - idEnemy: 0
     nameEnemy: Zombie
     typeEnemy: 0
-    dropItem: []
+    dropItem:
+    - {fileID: 3296320230217659456, guid: 141bb7ec07088f34299b17a398e4fee4, type: 3}
+    - {fileID: 3296320230217659456, guid: 52647559f4cbff94280b313689826d2a, type: 3}
     soulDrop: 100
     maxRank: 4
     enemyMaxHealth: 100

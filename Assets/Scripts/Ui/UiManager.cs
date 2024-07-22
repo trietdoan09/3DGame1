@@ -10,6 +10,8 @@ public class UiManager : MonoBehaviour
     [SerializeField] private Slider staminaBar;
     [SerializeField] private Slider manaBar;
     [SerializeField] private Slider healthBar;
+    [SerializeField] private Slider FoodBar;
+    [SerializeField] private Slider WaterBar;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,9 +28,17 @@ public class UiManager : MonoBehaviour
     {
         staminaBar.maxValue = playerManager.maxStaminaPoint;
         staminaBar.value = playerManager.currentStaminaPoint;
+
         manaBar.maxValue = playerManager.maxManaPoint;
         manaBar.value = playerManager.currentManaPoint;
+
         healthBar.maxValue = playerManager.maxHealthPoint;
         healthBar.value = playerManager.currentHealthPoint;
+
+        FoodBar.maxValue = playerManager.maxFoodPoint;
+        FoodBar.value = playerManager.currentFoodPoint;
+
+        WaterBar.maxValue = playerManager.maxDrinkPoint;
+        WaterBar.value = playerManager.currentDrinkPoint;
     }
 }

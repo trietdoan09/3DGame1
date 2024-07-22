@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26fc2b7c179dd4e4db4051160a7fbe49, type: 3}
+  m_Script: {fileID: 11500000, guid: 3c1ef55df81c60840a4793586dcb1ee8, type: 3}
   m_Name: Glove
   m_EditorClassIdentifier: 
   <IsStackable>k__BackingField: 0
@@ -17,3 +17,7 @@ MonoBehaviour:
   <Name>k__BackingField: Glove
   <Description>k__BackingField: Increase some def
   <ItemImage>k__BackingField: {fileID: 21300000, guid: 86dce3ca7eae12c48b2577615706b4fb, type: 3}
+  <DefaultParametersList>k__BackingField:
+  - itemParameter: {fileID: 11400000, guid: f7ea083e9837d994d835f1d4d0e8e3f3, type: 2}
+    value: 100
+  <actionSFX>k__BackingField: {fileID: 0}
