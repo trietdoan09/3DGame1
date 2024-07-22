@@ -25,7 +25,7 @@ namespace Inventory.Model
                 inventoryItems.Add(DataInventoryItem.GetEmptyItem());
             }
         }
-        public int AddItem(ItemSO item, int quantity)
+        public int AddItem(ItemSO item, int quantity, List<ItemParameter> itemSate = null)
         {
             if(item.IsStackable == false)
             {
@@ -33,7 +33,7 @@ namespace Inventory.Model
                 {
                     while (quantity > 0 && IsInventoryFull() == false)
                     {
-                        quantity -= AddItemToFirsFreetSlot(item, 1);
+                        quantity -= AddItemToFirsFreetSlot(item, 1, itemSate);
                     }
                     InformAboutChange();
                     return quantity;
@@ -44,12 +44,13 @@ namespace Inventory.Model
             return quantity;
         }
 
-        private int AddItemToFirsFreetSlot(ItemSO item, int quantity)
+        private int AddItemToFirsFreetSlot(ItemSO item, int quantity, List<ItemParameter> itemSate = null)
         {
             DataInventoryItem newItem = new DataInventoryItem
             {
                 item = item,
-                quantity = quantity
+                quantity = quantity,
+                itemState = new List<ItemParameter>(itemSate == null ? item.DefaultParametersList : itemSate)
             };
             for(int i = 0; i <inventoryItems.Count; i++)
             {
@@ -95,6 +96,21 @@ namespace Inventory.Model
             return quantity;
         }
 
+        public void RemoveItem(int itemIndex, int amount)
+        {
+            if(inventoryItems.Count > itemIndex)
+            {
+                if (inventoryItems[itemIndex].IsEmpty)
+                    return;
+                int reminder = inventoryItems[itemIndex].quantity - amount;
+                if (reminder <= 0)
+                    inventoryItems[itemIndex] = DataInventoryItem.GetEmptyItem();
+                else
+                    inventoryItems[itemIndex] = inventoryItems[itemIndex].ChangQuantity(reminder);
+                InformAboutChange();
+            }
+        }
+
         public void AddItem(DataInventoryItem item)
         {
             AddItem(item.item, item.quantity);
@@ -135,20 +151,23 @@ namespace Inventory.Model
     {
         public int quantity;
         public ItemSO item;
+        public List<ItemParameter> itemState;
         public bool IsEmpty => item == null;
         public DataInventoryItem ChangQuantity(int newQuantity)
         {
             return new DataInventoryItem
             {
                 item = this.item,
-                quantity = newQuantity
+                quantity = newQuantity,
+                itemState = new List<ItemParameter>(this.itemState)
             };
         }
         public static DataInventoryItem GetEmptyItem()
             => new DataInventoryItem
             {
                 item = null,
-                quantity = 0
+                quantity = 0,
+                itemState = new List<ItemParameter>()
             };
     }
 }

@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 26fc2b7c179dd4e4db4051160a7fbe49, type: 3}
-  m_Name: ManaPotion
+  m_Name: Shoes
   m_EditorClassIdentifier: 
-  <IsStackable>k__BackingField: 1
-  <MaxStackSize>k__BackingField: 99
-  <Name>k__BackingField: Small Mana Poition
-  <Description>k__BackingField: Recover 20 mana point
-  <ItemImage>k__BackingField: {fileID: 21300000, guid: 65ea67c90c7fa33458141c120e8ba79e, type: 3}
+  <IsStackable>k__BackingField: 0
+  <MaxStackSize>k__BackingField: 1
+  <Name>k__BackingField: Shoes
+  <Description>k__BackingField: Increase def
+  <ItemImage>k__BackingField: {fileID: 21300000, guid: ce10d09a6e3f7c64eada8bb2e7a9072b, type: 3}
