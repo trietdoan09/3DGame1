@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2572003815fdc454eabc97cb92870b98, type: 3}
+  m_Name: Mushroom
+  m_EditorClassIdentifier: 
+  <IsStackable>k__BackingField: 1
+  <MaxStackSize>k__BackingField: 99
+  <Name>k__BackingField: Mushroom
+  <Description>k__BackingField: Can eat and reduce hunger
+  <ItemImage>k__BackingField: {fileID: 21300000, guid: 2ac6bb5a2235a5748be5fbe5b65f6913, type: 3}
+  modifierData:
+  - statModifier: {fileID: 11400000, guid: c2eeaa68be44d144390488b64d8e1830, type: 2}
+    value: 20
+    stat: 3

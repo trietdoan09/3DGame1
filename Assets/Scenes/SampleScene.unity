@@ -7690,15 +7690,7 @@ MonoBehaviour:
   inventoryData: {fileID: 11400000, guid: ec4d7ec6c6c5aa640928e3e5a03dc5d6, type: 2}
   initialItems:
   - quantity: 2
-    item: {fileID: 11400000, guid: 2e110ca735369404c8346c78efb27076, type: 2}
-  - quantity: 0
-    item: {fileID: 0}
-  - quantity: 2
-    item: {fileID: 11400000, guid: c7e8cf3f4eecb544daecefcc7a94aaa2, type: 2}
-  - quantity: 0
-    item: {fileID: 0}
-  - quantity: 1
-    item: {fileID: 11400000, guid: 2e110ca735369404c8346c78efb27076, type: 2}
+    item: {fileID: 11400000, guid: 69ec6b97ce8a2454c8fa46badd8c50ef, type: 2}
 --- !u!114 &1742278360
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8593,7 +8585,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1caa5b0cc7caf5c4c845327e15f9eb2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <InventoryItem>k__BackingField: {fileID: 11400000, guid: 2e110ca735369404c8346c78efb27076, type: 2}
+  <InventoryItem>k__BackingField: {fileID: 11400000, guid: 69ec6b97ce8a2454c8fa46badd8c50ef, type: 2}
   <Quantity>k__BackingField: 1
   audioSource: {fileID: 2098549870}
   duration: 0.3

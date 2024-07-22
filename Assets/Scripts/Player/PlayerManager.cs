@@ -11,6 +11,10 @@ public class PlayerManager : MonoBehaviour
     public float currentHealthPoint;
     public float maxManaPoint;
     public float currentManaPoint;
+    public float maxFoodPoint;
+    public float currentFoodPoint;
+    public float maxDrinkPoint;
+    public float currentDrinkPoint;
     public float playerAttack;
     public bool runOutStamina;
     public bool isImmortal;
@@ -35,14 +39,54 @@ public class PlayerManager : MonoBehaviour
         maxHealthPoint = 100f;
         maxManaPoint = 100f;
         maxStaminaPoint = 100f;
+        maxFoodPoint = 100f;
+        maxDrinkPoint = 100f;
         currentHealthPoint = maxHealthPoint;
         currentManaPoint = maxManaPoint;
         currentStaminaPoint = maxStaminaPoint;
+        currentFoodPoint = maxFoodPoint;
+        currentDrinkPoint = maxDrinkPoint;
         playerAttack = 20f;
     }
     public void PlayerTakeDamage(float damage)
     {
         currentHealthPoint = currentHealthPoint - damage <= 0 ? 0 : currentHealthPoint - damage;
+    }
+    public void AddStat(float value, int stat)
+    {
+        switch (stat)
+        {
+            case 0:
+                {
+                    //add health
+                    currentHealthPoint = currentHealthPoint + value > maxHealthPoint ? maxHealthPoint : currentHealthPoint + value;
+                    break;
+                }
+            case 1:
+                {
+                    //add mana
+                    currentManaPoint = currentManaPoint + value > maxManaPoint ? maxManaPoint : currentManaPoint + value;
+                    break;
+                }
+            case 2:
+                {
+                    //add stamina
+                    currentStaminaPoint = currentStaminaPoint + value > maxStaminaPoint ? maxStaminaPoint : currentStaminaPoint + value;
+                    break;
+                }
+            case 3:
+                {
+                    //add food
+                    currentFoodPoint = currentFoodPoint + value > maxFoodPoint ? maxFoodPoint : currentFoodPoint + value;
+                    break;
+                }
+            case 4:
+                {
+                    currentDrinkPoint = currentDrinkPoint + value > maxDrinkPoint ? maxDrinkPoint : currentDrinkPoint + value;
+                    break;
+                }
+            default:break;
+        }
     }
     public void PlayerBlockAttack(float damage)
     {
